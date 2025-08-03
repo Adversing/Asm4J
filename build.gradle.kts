@@ -1,6 +1,7 @@
 plugins {
     java
     application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "me.adversing"
@@ -30,9 +31,29 @@ application {
     mainClass.set("me.adversing.Main")
 }
 
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "me.adversing.Main"
+        )
+    }
+}
+
 tasks.withType<JavaExec> {
     jvmArgs(
         "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
         "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED"
     )
 }
+
+tasks.shadowJar {
+    archiveClassifier.set("all")
+    manifest {
+        attributes(
+            "Main-Class" to "me.adversing.Main",
+            "Add-Exports" to "java.base/jdk.internal.misc",
+            "Add-Opens" to "java.base/jdk.internal.misc"
+        )
+    }
+}
+

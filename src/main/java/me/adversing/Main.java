@@ -21,7 +21,7 @@ public class Main {
 
         DiagnosticService diagnosticService = new DiagnosticService();
         Parser parser = new Parser(diagnosticService);
-        String file = validateFile(args[0]);
+        String file = validateFile(args);
         File asmFile = new File(file);
 
         try (ASMEvaluator evaluator = new ASMEvaluator(diagnosticService, debug)) {
@@ -55,10 +55,16 @@ public class Main {
         return Arrays.stream(args).anyMatch(arg -> "--debug".equals(arg) || "-d".equals(arg));
     }
 
-    private static String validateFile(String file) {
-        if (file == null) {
-            throw new IllegalArgumentException("No file provided.");
+    private static String validateFile(String[] args) {
+        if (args == null || args.length == 0) {
+            throw new IllegalArgumentException("No arguments provided.");
         }
+
+        String file = args[0];
+        if (file == null || file.trim().isEmpty()) {
+            throw new IllegalArgumentException("File path cannot be null or empty.");
+        }
+
         return file;
     }
 }
