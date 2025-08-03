@@ -21,7 +21,8 @@ public class Main {
 
         DiagnosticService diagnosticService = new DiagnosticService();
         Parser parser = new Parser(diagnosticService);
-        File asmFile = new File("src/main/resources/program.asm");
+        String file = validateFile(args[0]);
+        File asmFile = new File(file);
 
         try (ASMEvaluator evaluator = new ASMEvaluator(diagnosticService, debug)) {
             List<Instruction> instructions = parser.parseFile(asmFile);
@@ -52,5 +53,12 @@ public class Main {
 
     private static boolean hasDebugFlag(String[] args) {
         return Arrays.stream(args).anyMatch(arg -> "--debug".equals(arg) || "-d".equals(arg));
+    }
+
+    private static String validateFile(String file) {
+        if (file == null) {
+            throw new IllegalArgumentException("No file provided.");
+        }
+        return file;
     }
 }
