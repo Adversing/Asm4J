@@ -1,0 +1,53 @@
+package me.adversing.asm.instruction.impl.convert;
+
+import me.adversing.asm.Operand;
+import me.adversing.asm.engine.ASMEvaluator;
+import me.adversing.asm.instruction.handler.InstructionHandler;
+
+import java.util.List;
+
+public class CvtDS implements InstructionHandler {
+    @Override
+    public String getName() {
+        return "cvt.d.s";
+    }
+    @Override
+    public void execute(List<Operand> operands, ASMEvaluator evaluator) {
+        if (!checkOperands(operands, evaluator)) {
+            return;
+        }
+
+        float value = (float) evaluator.getFpRegisterValue(operands.get(1));
+        evaluator.setFpRegisterValue(operands.getFirst(), (double) value);
+    }
+
+    @Override
+    public boolean checkDestinationRegister(String register, ASMEvaluator evaluator) {
+        if (!evaluator.getFpRegisterOffsets().containsKey(register)) {
+            evaluator.getDiagnosticService().addError("Register ." + register + " not found.");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkOperands(List<Operand> operands, ASMEvaluator evaluator) {
+        if (operands.size() != 2) {
+            evaluator.getDiagnosticService().addError("Cvt.d.s instruction must have exactly 2 operand(s).");
+            return false;
+        }
+
+        try {
+            Float.parseFloat(operands.get(1).value());
+        } catch (NumberFormatException e) {
+            evaluator.getDiagnosticService().addError("Cvt.d.s instruction operand must be a float.");
+            return false;
+        }
+
+        if (!evaluator.getFpRegisterOffsets().containsKey(operands.get(1).value())) {
+            evaluator.getDiagnosticService().addError("Source registers not found.");
+            return false;
+        }
+        return true;
+    }
+}

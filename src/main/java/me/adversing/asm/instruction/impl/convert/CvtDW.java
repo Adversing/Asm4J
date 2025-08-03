@@ -1,0 +1,54 @@
+package me.adversing.asm.instruction.impl.convert;
+
+import me.adversing.asm.Operand;
+import me.adversing.asm.engine.ASMEvaluator;
+import me.adversing.asm.instruction.handler.InstructionHandler;
+
+import java.util.List;
+
+public class CvtDW implements InstructionHandler {
+    @Override
+    public String getName() {
+        return "cvt.d.w";
+    }
+
+    @Override
+    public void execute(List<Operand> operands, ASMEvaluator evaluator) {
+        if (!checkOperands(operands, evaluator)) {
+            return;
+        }
+
+        int value = evaluator.getRegisterValue(operands.get(1));
+        evaluator.setFpRegisterValue(operands.getFirst(), (double) value);
+    }
+
+    @Override
+    public boolean checkDestinationRegister(String register, ASMEvaluator evaluator) {
+        if (!evaluator.getFpRegisterOffsets().containsKey(register)) {
+            evaluator.getDiagnosticService().addError("Register ." + register + " not found.");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkOperands(List<Operand> operands, ASMEvaluator evaluator) {
+        if (operands.size() != 2) {
+            evaluator.getDiagnosticService().addError("Cvt.d.w instruction must have exactly 2 operand(s).");
+            return false;
+        }
+
+        try {
+            Integer.parseInt(operands.get(1).value());
+        } catch (NumberFormatException e) {
+            evaluator.getDiagnosticService().addError("Cvt.d.w instruction operand must be an integer.");
+            return false;
+        }
+
+        if (!evaluator.getIntRegisterOffsets().containsKey(operands.get(1).value())) {
+            evaluator.getDiagnosticService().addError("Source Register not found.");
+            return false;
+        }
+        return true;
+    }
+}
