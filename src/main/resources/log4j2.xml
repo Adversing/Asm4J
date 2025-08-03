@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="ProgramConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg%n"/>
+        </Console>
+        <Console name="DebugConsole" target="SYSTEM_ERR">
+            <PatternLayout pattern="[DEBUG] %msg%n"/>
+        </Console>
+        <Console name="DiagnosticConsole" target="SYSTEM_ERR">
+            <PatternLayout pattern="[DIAGNOSTIC] %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="programOutput" level="INFO" additivity="false">
+            <AppenderRef ref="ProgramConsole"/>
+        </Logger>
+        <Logger name="debugOutput" level="DEBUG" additivity="false">
+            <AppenderRef ref="DebugConsole"/>
+        </Logger>
+        <Logger name="diagnosticOutput" level="INFO" additivity="false">
+            <AppenderRef ref="DiagnosticConsole"/>
+        </Logger>
+        <Logger name="org.reflections.Reflections" level="ERROR" additivity="false">
+            <AppenderRef ref="DiagnosticConsole"/>
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="DiagnosticConsole"/>
+        </Root>
+    </Loggers>
+</Configuration>
