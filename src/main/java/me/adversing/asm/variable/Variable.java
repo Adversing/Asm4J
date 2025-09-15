@@ -9,6 +9,10 @@ public record Variable(String name, Type type, String value) {
                 .anyMatch(t -> t.type.equalsIgnoreCase(type));
     }
 
+    public boolean is(Type type) {
+        return type == this.type;
+    }
+
     @Getter
     public enum Type {
         WORD(".word"),

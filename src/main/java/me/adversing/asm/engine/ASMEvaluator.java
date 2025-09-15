@@ -271,7 +271,7 @@ public class ASMEvaluator implements AutoCloseable {
                         storeByteToMemory((int)(currentAddress - memoryBase), b);
                         currentAddress += SIZEOF_BYTE;
                     }
-                    if (var.type() == Variable.Type.ASCIIZ) {
+                    if (var.is(Variable.Type.ASCIIZ)) {
                         storeByteToMemory((int)(currentAddress - memoryBase), (byte) 0);
                         currentAddress += SIZEOF_BYTE;
                     }
